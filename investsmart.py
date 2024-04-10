@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.image('etiqa.png', width=200)
+st.image('etiqa.png', width=125)
 
 st.title('Invest Smart Flex Account Value Projection')
 
@@ -76,10 +76,8 @@ def calculate_bonus():
 
 st.write('')
 bonus_text = '💰 First Year Start-up Bonus: $' + f'{calculate_bonus():,}'
-bonus_tag = '<p style="font-family:sans-serif; font-size: 28px;">'+bonus_text+'</p>'
+bonus_tag = '<p style="font-family:sans-serif; font-size: 24px;">'+bonus_text+'</p>'
 st.markdown(bonus_tag, unsafe_allow_html=True)
-
-st.write('')
 
 df = pd.DataFrame(columns=['Age','Deposit','Start-up Bonus','Loyalty Bonus','Account Value (After Fees)','Yearly Dividends','Monthly Dividends','Yearly Fees'])
 
@@ -120,6 +118,86 @@ if invest_term == '10 Years':
         df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
         df = df._append(df_temp, ignore_index=True)
 
+if invest_term == '15 Years':
+
+    for i in range(15):
+
+        payment_term_int = int(payment_term.replace(' Years', ''))
+        if payment_term_int <= i:
+            deposit = 0
+        else:
+            deposit = yearly_invest_amount
+        
+        if i > 0:
+            su_bonus = 0
+        else:
+            su_bonus = calculate_bonus()
+        
+        if i == 0:
+            loyalty_bonus = 0
+            total_deposit = (deposit + su_bonus)
+            returns = total_deposit + (total_deposit *(roi/100))
+            fees = returns * 0.02
+            actual_returns = returns - fees
+        else:
+            if deposit != 0:
+                loyalty_bonus = int(df.iloc[i-1]['Account Value (After Fees)']) * 0.002
+            else:
+                loyalty_bonus = 0
+            total_deposit = int(df.iloc[i-1]['Account Value (After Fees)']) + deposit
+            returns = total_deposit + (total_deposit *(roi/100))
+            if i < 10:
+                fees = returns * 0.02
+            else:
+                fees = returns * 0.016
+            actual_returns = returns + loyalty_bonus - fees
+
+        yearly_dividends = actual_returns * (dividend/100)
+        monthly_dividends = yearly_dividends/12
+
+        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
+        df = df._append(df_temp, ignore_index=True)
+
+if invest_term == '20 Years':
+
+    for i in range(20):
+
+        payment_term_int = int(payment_term.replace(' Years', ''))
+        if payment_term_int <= i:
+            deposit = 0
+        else:
+            deposit = yearly_invest_amount
+        
+        if i > 0:
+            su_bonus = 0
+        else:
+            su_bonus = calculate_bonus()
+        
+        if i == 0:
+            loyalty_bonus = 0
+            total_deposit = (deposit + su_bonus)
+            returns = total_deposit + (total_deposit *(roi/100))
+            fees = returns * 0.02
+            actual_returns = returns - fees
+        else:
+            if deposit != 0:
+                loyalty_bonus = int(df.iloc[i-1]['Account Value (After Fees)']) * 0.002
+            else:
+                loyalty_bonus = 0
+            total_deposit = int(df.iloc[i-1]['Account Value (After Fees)']) + deposit
+            returns = total_deposit + (total_deposit *(roi/100))
+            if i < 10:
+                fees = returns * 0.02
+            else:
+                fees = returns * 0.016
+            actual_returns = returns + loyalty_bonus - fees
+
+        yearly_dividends = actual_returns * (dividend/100)
+        monthly_dividends = yearly_dividends/12
+
+        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
+        df = df._append(df_temp, ignore_index=True)
+
 df["Age"] = df["Age"].astype(int)
 df["Deposit"] = df["Deposit"].astype(int)
 df["Start-up Bonus"] = df["Start-up Bonus"].astype(int)
@@ -129,3 +207,17 @@ df["Yearly Dividends"] = df["Yearly Dividends"].astype(int)
 df["Monthly Dividends"] = df["Monthly Dividends"].astype(int)
 df["Loyalty Bonus"] = df["Loyalty Bonus"].astype(int)
 st.table(df)
+
+capital = df['Deposit'].sum()
+capital_text = '💲 Total Capital: $' + f'{capital:,}'
+capital_tag = '<p style="font-family:sans-serif; font-size: 24px;">'+capital_text+'</p>'
+st.markdown(capital_tag, unsafe_allow_html=True)
+
+if dividend > 0:
+    total_dividends = df['Yearly Dividends'].sum()
+    dividend_text = '💵 Total Dividends Payout: $' + f'{total_dividends:,}'
+    dividend_tag = '<p style="font-family:sans-serif; font-size: 24px;">'+dividend_text+'</p>'
+    st.markdown(dividend_tag, unsafe_allow_html=True)
+
+chart_data = df[['Account Value (After Fees)', 'Yearly Fees']]
+st.bar_chart(chart_data)
