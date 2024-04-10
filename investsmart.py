@@ -41,13 +41,13 @@ fund = st.selectbox(
 st.write('I am investing in ', fund)
 
 if fund == 'Fundsmith Equity Fund (Wealth Accumulation)':
-    roi = st.slider('**Projected fund growth %** (Past performance - Fundsmith Equity Fund: 10% | Allianz Income & Growth: 2%)', 0, 15, 10)
+    roi = st.slider('**Projected fund growth %** (Past performance - Fundsmith Equity Fund: 15% | Allianz Income & Growth: 2%)', 0, 15, 15)
     st.write('Fund projected to grow at ', roi, '%')
 
     dividend = st.slider('**Projected fund dividend payout %** (Past performance - Fundsmith Equity Fund: 0% | Allianz Income & Growth: 8%)', 0, 10, 0)
     st.write('Fund dividend payout projected at ', dividend, '%')
 else:
-    roi = st.slider('**Projected fund growth %** (Past performance - Fundsmith Equity Fund: 10% | Allianz Income & Growth: 2%)', 0, 15, 2)
+    roi = st.slider('**Projected fund growth %** (Past performance - Fundsmith Equity Fund: 15% | Allianz Income & Growth: 2%)', 0, 15, 2)
     st.write('Fund projected to grow at ', roi, '%')
 
     dividend = st.slider('**Projected fund dividend payout %** (Past performance - Fundsmith Equity Fund: 0% | Allianz Income & Growth: 8%)', 0, 10, 8)
