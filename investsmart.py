@@ -37,7 +37,7 @@ st.write('I am investing $', yearly_invest_amount, " every year")
 
 fund = st.selectbox(
     '**What fund do you want to invest in?**',
-    ('Fundsmith Equity Fund (Wealth Accumulation)', 'Allianz Income & Growth (Dividend Payout)'))
+    ('Allianz Income & Growth (Dividend Payout)', 'Fundsmith Equity Fund (Wealth Accumulation)'))
 st.write('I am investing in ', fund)
 
 if fund == 'Fundsmith Equity Fund (Wealth Accumulation)':
@@ -79,7 +79,7 @@ bonus_text = '💰 First Year Start-up Bonus: $' + f'{calculate_bonus():,}'
 bonus_tag = '<p style="font-family:sans-serif; font-size: 24px;">'+bonus_text+'</p>'
 st.markdown(bonus_tag, unsafe_allow_html=True)
 
-df = pd.DataFrame(columns=['Age','Deposit','Start-up Bonus','Loyalty Bonus','Account Value (After Fees)','Yearly Dividends','Monthly Dividends','Yearly Fees'])
+df = pd.DataFrame(columns=['Age','Deposit','Start-up Bonus','Loyalty Bonus','Account Value (After Fees)','Yearly Dividends','Monthly Dividends','Yearly Fees', 'Monthly Fees'])
 
 if invest_term == '10 Years':
 
@@ -111,11 +111,12 @@ if invest_term == '10 Years':
             returns = total_deposit + (total_deposit *(roi/100))
             fees = returns * 0.02
             actual_returns = returns + loyalty_bonus - fees
+        monthly_fees = fees/12
 
         yearly_dividends = actual_returns * (dividend/100)
         monthly_dividends = yearly_dividends/12
 
-        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
+        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus, 'Monthly Fees':monthly_fees}
         df = df._append(df_temp, ignore_index=True)
 
 if invest_term == '15 Years':
@@ -152,10 +153,12 @@ if invest_term == '15 Years':
                 fees = returns * 0.016
             actual_returns = returns + loyalty_bonus - fees
 
+        monthly_fees = fees/12
+
         yearly_dividends = actual_returns * (dividend/100)
         monthly_dividends = yearly_dividends/12
 
-        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
+        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus, 'Monthly Fees':monthly_fees}
         df = df._append(df_temp, ignore_index=True)
 
 if invest_term == '20 Years':
@@ -192,10 +195,12 @@ if invest_term == '20 Years':
                 fees = returns * 0.016
             actual_returns = returns + loyalty_bonus - fees
 
+        monthly_fees = fees/12
+
         yearly_dividends = actual_returns * (dividend/100)
         monthly_dividends = yearly_dividends/12
 
-        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus}
+        df_temp = {'Age':age+i, 'Deposit':deposit, 'Start-up Bonus':su_bonus, 'Account Value (After Fees)': actual_returns, 'Yearly Fees':fees, 'Yearly Dividends':yearly_dividends, 'Monthly Dividends':monthly_dividends, 'Loyalty Bonus':loyalty_bonus, 'Monthly Fees':monthly_fees}
         df = df._append(df_temp, ignore_index=True)
 
 df["Age"] = df["Age"].astype(int)
@@ -203,10 +208,13 @@ df["Deposit"] = df["Deposit"].astype(int)
 df["Start-up Bonus"] = df["Start-up Bonus"].astype(int)
 df["Account Value (After Fees)"] = df["Account Value (After Fees)"].astype(int)
 df["Yearly Fees"] = df["Yearly Fees"].astype(int)
+df["Monthly Fees"] = df["Monthly Fees"].astype(int)
 df["Yearly Dividends"] = df["Yearly Dividends"].astype(int)
 df["Monthly Dividends"] = df["Monthly Dividends"].astype(int)
 df["Loyalty Bonus"] = df["Loyalty Bonus"].astype(int)
-st.table(df)
+
+df_table = df.drop(['Yearly Fees', 'Monthly Fees'], axis=1)
+st.table(df_table)
 
 capital = df['Deposit'].sum()
 capital_text = '💲 Total Capital: $' + f'{capital:,}'
