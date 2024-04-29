@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.image('etiqa.png', width=125)
-
 st.title('Invest Smart Flex Account Value Projection')
 
 age = st.number_input('**How old are you?**', value=30, step=1, min_value=18, max_value=70)
